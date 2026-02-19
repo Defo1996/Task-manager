@@ -2,6 +2,8 @@ package ru.netology;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TodosTest {
@@ -16,9 +18,7 @@ class TodosTest {
         Meeting meeting = new Meeting(
                 555,
                 "Выкатка 3й версии приложения",
-                "Приложение НетоБанка",
-                "Во вторник после обеда"
-        );
+                "Приложение НетоБанка");
 
         Todos todos = new Todos();
 
@@ -28,49 +28,70 @@ class TodosTest {
 
         Task[] expected = {simpleTask, epic, meeting};
         Task[] actual = todos.findAll();
-        assertArrayEquals(expected, actual);
+        assertArrayEquals(expected, actual, "Все задачи должны быть найдены в правильном порядке");
     }
 
     @Test
-    public void searchShouldFindSimpleTask() {
+    public void searchShouldFindMultipleTasks() {
         Todos todos = new Todos();
-        SimpleTask task = new SimpleTask(1, "Купить продукты");
-        todos.add(task);
 
-        Task[] found = todos.search("продукты");
-        assertEquals(1, found.length);
-        assertEquals(task, found[0]);
-    }
+        SimpleTask task1 = new SimpleTask(1, "Купить хлеб");
+        SimpleTask task2 = new SimpleTask(2, "Купить молоко и хлеб");
+        Epic epic = new Epic(3, new String[]{"Хлеб", "Сыр"});
+        Meeting meeting = new Meeting(4, "Совещание по хлебу", "Проект Хлебный");
 
-    @Test
-    public void searchShouldFindEpicBySubtask() {
-        Todos todos = new Todos();
-        String[] subtasks = {"Купить молоко", "Оплатить счета"};
-        Epic epic = new Epic(2, subtasks);
+        todos.add(task1);
+        todos.add(task2);
         todos.add(epic);
-
-        Task[] found = todos.search("молоко");
-        assertEquals(1, found.length);
-        assertEquals(epic, found[0]);
-    }
-
-    @Test
-    public void searchShouldFindMeetingByTopic() {
-        Todos todos = new Todos();
-        Meeting meeting = new Meeting(3, "Совещание по проекту", "Проект Бета", "Сегодня в 15:00");
         todos.add(meeting);
 
-        Task[] found = todos.search("проект");
-        assertEquals(1, found.length);
-        assertEquals(meeting, found[0]);
+        Task[] result = todos.search("хлеб");
+
+        // Отладочная печать
+        System.out.println("Найдено задач: " + result.length);
+        for (int i = 0; i < result.length; i++) {
+            System.out.println("Задача " + i + ": " + result[i]);
+        }
+        System.out.println("Ожидаемый порядок: " + Arrays.toString(new Task[]{task1, task2, epic, meeting}));
+
+        // Ожидаем 4 задачи в порядке добавления
+        Task[] expected = {task1, task2, epic, meeting};
+        assertArrayEquals(expected, result, "Должны найтись все 4 задачи с 'хлеб' в точном порядке добавления");
     }
 
     @Test
-    public void searchShouldReturnEmptyArrayIfNoMatches() {
+    public void searchShouldFindExactlyOneTask() {
         Todos todos = new Todos();
-        todos.add(new SimpleTask(1, "Задача 1"));
 
-        Task[] found = todos.search("не существующий запрос");
-        assertEquals(0, found.length);
+        SimpleTask task1 = new SimpleTask(1, "Купить хлеб");
+        SimpleTask task2 = new SimpleTask(2, "Позвонить мама");
+        Meeting meeting = new Meeting(3, "Совещание по проекту", "Проект Бета");
+
+        todos.add(task1);
+        todos.add(task2);
+        todos.add(meeting);
+
+        Task[] result = todos.search("мама");
+
+        // Ожидаем одну задачу — task2
+        Task[] expected = {task2};
+        assertArrayEquals(expected, result, "Должна найтись 1 задача с 'мама'");
+    }
+
+    @Test
+    public void searchShouldFindZeroTasks() {
+        Todos todos = new Todos();
+
+        SimpleTask task1 = new SimpleTask(1, "Купить хлеб");
+        Epic epic = new Epic(2, new String[]{"Молоко", "Сыр"});
+
+        todos.add(task1);
+        todos.add(epic);
+
+        Task[] result = todos.search("яблоки");
+
+        // Ожидаем пустой массив
+        Task[] expected = {};
+        assertArrayEquals(expected, result, "Не должно быть найдено ни одной задачи с 'яблоки'");
     }
 }
