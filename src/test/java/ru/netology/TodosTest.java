@@ -54,7 +54,6 @@ class TodosTest {
         }
         System.out.println("Ожидаемый порядок: " + Arrays.toString(new Task[]{task1, task2, epic, meeting}));
 
-        // Ожидаем 4 задачи в порядке добавления
         Task[] expected = {task1, task2, epic, meeting};
         assertArrayEquals(expected, result, "Должны найтись все 4 задачи с 'хлеб' в точном порядке добавления");
     }
@@ -73,7 +72,6 @@ class TodosTest {
 
         Task[] result = todos.search("мама");
 
-        // Ожидаем одну задачу — task2
         Task[] expected = {task2};
         assertArrayEquals(expected, result, "Должна найтись 1 задача с 'мама'");
     }
@@ -90,8 +88,8 @@ class TodosTest {
 
         Task[] result = todos.search("яблоки");
 
-        // Ожидаем пустой массив
         Task[] expected = {};
         assertArrayEquals(expected, result, "Не должно быть найдено ни одной задачи с 'яблоки'");
     }
 }
+
