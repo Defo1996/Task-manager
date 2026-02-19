@@ -91,5 +91,23 @@ class TodosTest {
         Task[] expected = {};
         assertArrayEquals(expected, result, "Не должно быть найдено ни одной задачи с 'яблоки'");
     }
+
+    @Test
+    public void getIdShouldReturnCorrectId() {
+        SimpleTask task = new SimpleTask(42, "Тестовое задание");
+        assertEquals(42, task.getId(), "getId() должен возвращать правильный ID");
+    }
+
+    @Test
+    public void getIdForEpicShouldReturnCorrectId() {
+        Epic epic = new Epic(99, new String[]{"Подзадача 1"});
+        assertEquals(99, epic.getId(), "Epic должен возвращать свой ID");
+    }
+
+    @Test
+    public void getIdForMeetingShouldReturnCorrectId() {
+        Meeting meeting = new Meeting(100, "Тема", "Проект");
+        assertEquals(100, meeting.getId(), "Meeting должен возвращать свой ID");
+    }
 }
 
